@@ -1,2 +1,4 @@
 **/node_modules
 **/telepresence.log
+app/ca*
+app/server*
