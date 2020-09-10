@@ -5,13 +5,17 @@ const https = require('https');
 
 const app = express();
 app.use(bodyParser.json());
-const port = 443;
+const port = 8443;
 
 const options = { 
   ca: fs.readFileSync('ca.crt'), 
   cert: fs.readFileSync('server.crt'), 
   key: fs.readFileSync('server.key'), 
 }; 
+
+app.get('/hc', (req, res) => {
+  res.send('ok');
+});
 
 app.post('/', (req, res) => {
   if (

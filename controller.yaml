@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hdac
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    run: hdac
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: hdac
+  name: hdac
+spec:
+  containers:
+  - image: [OBMITTED]/hdac:0.1.0
+    name: hdac
+    ports:
+    - containerPort: 8443
+    imagePullPolicy: Always
+    livenessProbe:
+      httpGet:
+        port: 8443
+        path: /hc
+        scheme: HTTPS
+    readinessProbe:
+      httpGet:
+        port: 8443
+        path: /hc
+        scheme: HTTPS
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    securityContext:
+      runAsNonRoot: true
+      readOnlyRootFilesystem: true
+
