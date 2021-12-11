@@ -27,12 +27,22 @@ app.post('/', (req, res) => {
   }
   console.log(req.body); // DEBUGGING
   const { request: { uid } } = req.body;
+  const jsonPatch = [{
+    op: 'add',
+    path: '/metadata/labels/hello',
+    value: 'world',
+  }];
+  const jsonPatchString = JSON.stringify(jsonPatch);
+  const jsonPatchBuffer = Buffer.from(jsonPatchString);
+  const patch = jsonPatchBuffer.toString('base64');
   res.send({
     apiVersion: 'admission.k8s.io/v1',
     kind: 'AdmissionReview',
     response: {
       uid,
       allowed: true,
+      patchType: 'JSONPatch',
+      patch,
     },
   });
 });
