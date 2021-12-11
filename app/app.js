@@ -29,8 +29,8 @@ app.post('/', (req, res) => {
   const { request: { uid } } = req.body;
   const jsonPatch = [{
     op: 'add',
-    path: '/metadata/labels/hello',
-    value: 'world',
+    path: '/metadata/labels',
+    value: { 'hello': 'world' },
   }];
   const jsonPatchString = JSON.stringify(jsonPatch);
   const jsonPatchBuffer = Buffer.from(jsonPatchString);
