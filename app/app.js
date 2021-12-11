@@ -25,7 +25,7 @@ app.post('/', (req, res) => {
     res.status(400).send();
     return;
   }
-  console.log(req.body); // DEBUGGING
+  console.log(req.body.request.object)
   const { request: { uid } } = req.body;
   const jsonPatch = [{
     op: 'add',
