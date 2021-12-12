@@ -36,6 +36,8 @@ app.post("/", (req, res) => {
       dryRun,
       object: {
         metadata: { annotations },
+        name,
+        namespace,
       },
       uid,
     },
@@ -51,10 +53,9 @@ app.post("/", (req, res) => {
     });
     return;
   }
-  // TODO: USE NAME
   const pvc = {
     metadata: {
-      name: "test",
+      name,
     },
     spec: {
       accessModes: ["ReadWriteOnce"],
@@ -66,11 +67,9 @@ app.post("/", (req, res) => {
       },
     },
   };
-  // TODO: USE NAMESPACE
   k8sApi
-    .createNamespacedPersistentVolumeClaim("default", pvc)
-    .then((res) => {
-      console.log('SUCCESS 1');
+    .createNamespacedPersistentVolumeClaim(namespace, pvc)
+    .then(() => {
       // TODO: NEED TO ATTACH PVC TO POD
       const jsonPatch = [
         {
@@ -82,7 +81,6 @@ app.post("/", (req, res) => {
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
       const patch = jsonPatchBuffer.toString("base64");
-      console.log('SUCCESS 2');
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
@@ -93,11 +91,8 @@ app.post("/", (req, res) => {
           patch,
         },
       });
-      console.log('SUCCESS 3');
     })
     .catch((err) => {
-      console.log('FAILURE');
-      console.log(err);
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
