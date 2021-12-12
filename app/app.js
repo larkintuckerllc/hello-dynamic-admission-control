@@ -25,7 +25,6 @@ app.post('/', (req, res) => {
     res.status(400).send();
     return;
   }
-  // TODO: DETECT DRY RUN
   // TODO: DETECT ANNOTATION
   // TODO: NEED TO CREATE PVC (SIDE EFFECT THING)
   // TODO: NEED TO ATTACH PVC TO POD
@@ -33,7 +32,10 @@ app.post('/', (req, res) => {
   // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
   // TODO: - NEED TO DELETE PVC WHEN DELETING POD
   console.log(req.body)
-  const { request: { uid } } = req.body;
+  const { request: { dryRun, uid } } = req.body;
+  if (!dryRun) {
+    console.log('DO IT');
+  }
   const jsonPatch = [{
     op: 'add',
     path: '/metadata/labels',
