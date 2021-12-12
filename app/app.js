@@ -25,14 +25,25 @@ app.post('/', (req, res) => {
     res.status(400).send();
     return;
   }
-  // TODO: DETECT ANNOTATION
   // TODO: NEED TO CREATE PVC (SIDE EFFECT THING)
   // TODO: NEED TO ATTACH PVC TO POD
   // TODO: THINGS IN SEPARATE CONTROLLER
   // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
   // TODO: - NEED TO DELETE PVC WHEN DELETING POD
   console.log(req.body.request.object)
-  const { request: { dryRun, uid } } = req.body;
+  const { request: { dryRun, object: { metadata: { annotations } }, uid } } = req.body;
+  if (annotations == undefined || annotations.pvc == undefined) {
+    res.send({
+      apiVersion: 'admission.k8s.io/v1',
+      kind: 'AdmissionReview',
+      response: {
+        uid,
+        allowed: true,
+      },
+    });
+    return;
+  }
+  console.log('PATCH IT')
   if (!dryRun) {
     console.log('DO IT');
   }
