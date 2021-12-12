@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
   // TODO: THINGS IN SEPARATE CONTROLLER
   // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
   // TODO: - NEED TO DELETE PVC WHEN DELETING POD
-  console.log(req.body)
+  console.log(req.body.request.body)
   const { request: { dryRun, uid } } = req.body;
   if (!dryRun) {
     console.log('DO IT');
