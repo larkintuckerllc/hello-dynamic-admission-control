@@ -42,6 +42,8 @@ app.post("/", (req, res) => {
       uid,
     },
   } = req.body;
+  console.log(name);
+  console.log(namespace);
   if (dryRun || annotations == undefined || annotations.pvc == undefined) {
     res.send({
       apiVersion: "admission.k8s.io/v1",
