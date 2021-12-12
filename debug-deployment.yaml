@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: debug
+  template:
+    metadata:
+      annotations:
+        volume-claim-template/name: "data"
+        volume-claim-template/storage: "1Gi"
+      labels:
+        app: debug
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu
+        command: 
+        - /bin/sh
+        args:
+        - -c
+        - "tail -f /dev/null"
+        volumeMounts:
+        - mountPath: /data
+          name: data

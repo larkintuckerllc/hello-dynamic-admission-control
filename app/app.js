@@ -37,7 +37,10 @@ app.post("/", (req, res) => {
       uid,
     },
   } = req.body;
-  if (dryRun || annotations == undefined || annotations.pvc == undefined) {
+  if (dryRun || annotations == undefined ||
+    annotations['volume-claim-template/name'] == undefined ||
+    annotations['volume-claim-template/storage'] == undefined
+    ) {
     res.send({
       apiVersion: "admission.k8s.io/v1",
       kind: "AdmissionReview",
@@ -57,7 +60,7 @@ app.post("/", (req, res) => {
       storageClassName: "standard-rwo",
       resources: {
         requests: {
-          storage: "10Gi",
+          storage: annotations['volume-claim-template/storage'],
         },
       },
     },
@@ -77,7 +80,7 @@ app.post("/", (req, res) => {
         op: 'add',
         path: '/spec/volumes/-',
         value: {
-          name: 'data',
+          name: annotations['volume-claim-template/name'],
           persistentVolumeClaim: {
             claimName: name,
           },
