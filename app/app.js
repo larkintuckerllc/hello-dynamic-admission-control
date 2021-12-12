@@ -92,13 +92,13 @@ spec:
       if (volumes == undefined) {
         jsonPatch.push({
           op: 'add',
-          path: '/volumes',
+          path: '/spec/volumes',
           value: [],
         });
       }
       jsonPatch.push({
         op: 'add',
-        path: '/volumes/-',
+        path: '/spec/volumes/-',
         value: {
           name: 'data',
           persistentVolumeClaim: {
