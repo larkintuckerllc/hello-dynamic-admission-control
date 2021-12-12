@@ -70,7 +70,7 @@ app.post("/", (req, res) => {
   k8sApi
     .createNamespacedPersistentVolumeClaim("default", pvc)
     .then((res) => {
-      console.log('SUCCESS');
+      console.log('SUCCESS 1');
       // TODO: NEED TO ATTACH PVC TO POD
       const jsonPatch = [
         {
@@ -82,6 +82,7 @@ app.post("/", (req, res) => {
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
       const patch = jsonPatchBuffer.toString("base64");
+      console.log('SUCCESS 2');
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
