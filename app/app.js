@@ -2,6 +2,36 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
 const https = require('https');
+const k8s = require('@kubernetes/client-node');
+
+const kc = new k8s.KubeConfig();
+kc.loadFromDefault();
+const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+
+// TODO: DEMO CODE
+var pvc = {
+  metadata: {
+      name: 'test',
+  },
+  spec: {
+    accessModes: ['ReadWriteOnce'],
+    storageClassName: 'standard-rwo',
+    resources: {
+      requests: {
+        storage: '10Gi',
+      },
+    },
+  },
+};
+k8sApi.createNamespacedPersistentVolumeClaim('default', pvc)
+.then((res) => {
+  console.log('SUCCESS');
+  // SUCCESS
+})
+.catch(() => {
+  console.log('FAIL');
+  // FAIL
+});
 
 const app = express();
 app.use(bodyParser.json());
