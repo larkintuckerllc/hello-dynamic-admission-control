@@ -95,8 +95,9 @@ app.post("/", (req, res) => {
       });
       console.log('SUCCESS 3');
     })
-    .catch(() => {
+    .catch((err) => {
       console.log('FAILURE');
+      console.log(err);
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
