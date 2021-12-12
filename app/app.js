@@ -25,6 +25,13 @@ app.post('/', (req, res) => {
     res.status(400).send();
     return;
   }
+  // TODO: DETECT DRY RUN
+  // TODO: DETECT ANNOTATION
+  // TODO: NEED TO CREATE PVC (SIDE EFFECT THING)
+  // TODO: NEED TO ATTACH PVC TO POD
+  // TODO: THINGS IN SEPARATE CONTROLLER
+  // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
+  // TODO: - NEED TO DELETE PVC WHEN DELETING POD
   console.log(req.body.request.object)
   const { request: { uid } } = req.body;
   const jsonPatch = [{
@@ -52,4 +59,3 @@ const server = https.createServer(options, app);
 server.listen(port, () => {
   console.log(`Server running on port ${port}/`);
 });
-
