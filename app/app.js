@@ -93,6 +93,7 @@ app.post("/", (req, res) => {
           patch,
         },
       });
+      console.log('SUCCESS 3');
     })
     .catch(() => {
       console.log('FAILURE');
