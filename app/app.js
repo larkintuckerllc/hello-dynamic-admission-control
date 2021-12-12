@@ -69,11 +69,31 @@ app.post("/", (req, res) => {
     .createNamespacedPersistentVolumeClaim(namespace, pvc)
     .then(() => {
       // TODO: NEED TO ATTACH PVC TO POD
+      /*
+      apiVersion: v1
+kind: Pod
+metadata:
+  name: producer
+spec:
+  containers:
+  - name: ubuntu
+    command:
+    - tail
+    - -f
+    - /dev/null
+    image: ubuntu
+    volumeMounts:
+    - mountPath: /data
+      name: data
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data
+      */
       const jsonPatch = [
         {
           op: "add",
-          path: "/metadata/labels",
-          value: { hello: "world" },
+          path: "/volumes",
         },
       ];
       const jsonPatchString = JSON.stringify(jsonPatch);
