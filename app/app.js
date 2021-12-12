@@ -87,9 +87,6 @@ spec:
       claimName: data
       */
      /*
-      const jsonPatchString = JSON.stringify(jsonPatch);
-      const jsonPatchBuffer = Buffer.from(jsonPatchString);
-      const patch = jsonPatchBuffer.toString("base64");
       */
       const jsonPatch = [];
       if (volumes == undefined) {
@@ -109,15 +106,17 @@ spec:
           },
         },
       });
-      console.log(jsonPatch);
+      const jsonPatchString = JSON.stringify(jsonPatch);
+      const jsonPatchBuffer = Buffer.from(jsonPatchString);
+      const patch = jsonPatchBuffer.toString("base64");
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
         response: {
           uid,
           allowed: true,
-          // patchType: "JSONPatch",
-          // patch,
+          patchType: "JSONPatch",
+          patch,
         },
       });
     })
