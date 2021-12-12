@@ -68,7 +68,6 @@ app.post("/", (req, res) => {
   k8sApi
     .createNamespacedPersistentVolumeClaim(namespace, pvc)
     .then(() => {
-      const jsonPatch = [];
       if (volumes == undefined) {
         res.send({
           apiVersion: "admission.k8s.io/v1",
@@ -80,6 +79,8 @@ app.post("/", (req, res) => {
         }); 
         return;
       }
+      console.log('CP 1');
+      console.log(volumes);
       let success = false;
       for (let i = 0; i < volumes.length; i++) {
         if (volumes[i].name == annotations['volume-claim-template/name']) {
@@ -92,6 +93,8 @@ app.post("/", (req, res) => {
           };
         }
       }
+      console.log('CP 2');
+      console.log(volumes);
       if (!success) {
         res.send({
           apiVersion: "admission.k8s.io/v1",
@@ -103,11 +106,14 @@ app.post("/", (req, res) => {
         }); 
         return;
       }
-      jsonPatch.push({
+      console.log('CP 3');
+      jsonPatch = [{
         op: 'replace',
         path: '/spec/volumes',
         value: volumes,
-      });
+      }];
+      console.log('CP 4');
+      console.log(jsonPatch);
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
       const patch = jsonPatchBuffer.toString("base64");
