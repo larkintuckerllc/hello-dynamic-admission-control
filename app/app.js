@@ -72,6 +72,7 @@ app.post("/", (req, res) => {
   k8sApi
     .createNamespacedPersistentVolumeClaim(namespace, pvc)
     .then(() => {
+      console.log('WHERE 1');
       if (volumes == undefined) {
         res.send({
           apiVersion: "admission.k8s.io/v1",
@@ -133,6 +134,7 @@ app.post("/", (req, res) => {
       });
     })
     .catch(() => {
+      console.log('WHERE 2');
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
