@@ -32,7 +32,7 @@ app.post('/', (req, res) => {
   // TODO: THINGS IN SEPARATE CONTROLLER
   // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
   // TODO: - NEED TO DELETE PVC WHEN DELETING POD
-  console.log(req.body.request.object)
+  console.log(req.body)
   const { request: { uid } } = req.body;
   const jsonPatch = [{
     op: 'add',
