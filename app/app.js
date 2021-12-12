@@ -23,10 +23,12 @@ app.get("/hc", (req, res) => {
 });
 
 app.post("/", (req, res) => {
+  console.log('WHAT 0');
   if (req.body.request === undefined || req.body.request.uid === undefined) {
     res.status(400).send();
     return;
   }
+  console.log('WHAT 1');
   const {
     request: {
       dryRun,
@@ -37,6 +39,7 @@ app.post("/", (req, res) => {
       uid,
     },
   } = req.body;
+  console.log(annotations);
   if (dryRun || annotations == undefined ||
     annotations['volume-claim-template/name'] == undefined ||
     annotations['volume-claim-template/storage'] == undefined
@@ -51,6 +54,7 @@ app.post("/", (req, res) => {
     });
     return;
   }
+  console.log('WHAT 2');
   const pvc = {
     metadata: {
       name,
