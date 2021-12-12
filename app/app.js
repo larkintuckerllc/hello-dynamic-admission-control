@@ -35,8 +35,8 @@ app.post("/", (req, res) => {
     request: {
       dryRun,
       object: {
-        metadata: { annotations, name, namespace },
-        volumes,
+        metadata: { annotations, name, namespace, },
+        spec: { volumes, }
       },
       uid,
     },
@@ -78,11 +78,6 @@ metadata:
 spec:
   containers:
   - name: ubuntu
-    command:
-    - tail
-    - -f
-    - /dev/null
-    image: ubuntu
     volumeMounts:
     - mountPath: /data
       name: data
