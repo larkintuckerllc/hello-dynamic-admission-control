@@ -36,6 +36,7 @@ app.post("/", (req, res) => {
       dryRun,
       object: {
         metadata: { annotations, name, namespace },
+        volumes,
       },
       uid,
     },
@@ -90,23 +91,38 @@ spec:
     persistentVolumeClaim:
       claimName: data
       */
-      const jsonPatch = [
-        {
-          op: "add",
-          path: "/volumes",
-        },
-      ];
+     /*
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
       const patch = jsonPatchBuffer.toString("base64");
+      */
+      const jsonPatch = [];
+      if (volumes == undefined) {
+        jsonPatch.push({
+          op: 'add',
+          path: '/volumes',
+          value: [],
+        });
+      }
+      jsonPatch.push({
+        op: 'add',
+        path: '/volumes/-',
+        value: {
+          name: 'data',
+          persistentVolumeClaim: {
+            claimName: name,
+          },
+        },
+      });
+      console.log(jsonPatch);
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
         response: {
           uid,
           allowed: true,
-          patchType: "JSONPatch",
-          patch,
+          // patchType: "JSONPatch",
+          // patch,
         },
       });
     })
