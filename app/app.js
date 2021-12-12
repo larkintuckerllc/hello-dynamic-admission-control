@@ -70,21 +70,43 @@ app.post("/", (req, res) => {
     .then(() => {
       const jsonPatch = [];
       if (volumes == undefined) {
-        jsonPatch.push({
-          op: 'add',
-          path: '/spec/volumes',
-          value: [],
-        });
+        res.send({
+          apiVersion: "admission.k8s.io/v1",
+          kind: "AdmissionReview",
+          response: {
+            uid,
+            allowed: false,
+          },
+        }); 
+        return;
+      }
+      let success = false;
+      for (let i = 0; i < volumes.length; i++) {
+        if (volumes[i].name == annotations['volume-claim-template/name']) {
+          success = true;
+          volumes[i] = {
+            name: annotations['volume-claim-template/name'],
+            persistentVolumeClaim: {
+              claimName: name,
+            },
+          };
+        }
+      }
+      if (!success) {
+        res.send({
+          apiVersion: "admission.k8s.io/v1",
+          kind: "AdmissionReview",
+          response: {
+            uid,
+            allowed: false,
+          },
+        }); 
+        return;
       }
       jsonPatch.push({
-        op: 'add',
-        path: '/spec/volumes/-',
-        value: {
-          name: annotations['volume-claim-template/name'],
-          persistentVolumeClaim: {
-            claimName: name,
-          },
-        },
+        op: 'replace',
+        path: '/spec/volumes',
+        value: volumes,
       });
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
