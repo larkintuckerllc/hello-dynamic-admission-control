@@ -9,4 +9,7 @@ spec:
   - name: ubuntu
     image: ubuntu:18.04
     command: ['tail', '-f', '/dev/null']
+    volumeMounts:
+    - mountPath: /data
+      name: data
 

@@ -27,10 +27,6 @@ app.post("/", (req, res) => {
     res.status(400).send();
     return;
   }
-  // TODO: THINGS IN SEPARATE CONTROLLER
-  // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
-  // TODO: - NEED TO DELETE PVC WHEN DELETING POD
-  console.log(req.body.request.object);
   const {
     request: {
       dryRun,
@@ -69,25 +65,6 @@ app.post("/", (req, res) => {
   k8sApi
     .createNamespacedPersistentVolumeClaim(namespace, pvc)
     .then(() => {
-      // TODO: NEED TO ATTACH PVC TO POD
-      /*
-      apiVersion: v1
-kind: Pod
-metadata:
-  name: producer
-spec:
-  containers:
-  - name: ubuntu
-    volumeMounts:
-    - mountPath: /data
-      name: data
-  volumes:
-  - name: data
-    persistentVolumeClaim:
-      claimName: data
-      */
-     /*
-      */
       const jsonPatch = [];
       if (volumes == undefined) {
         jsonPatch.push({
@@ -120,7 +97,7 @@ spec:
         },
       });
     })
-    .catch((err) => {
+    .catch(() => {
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
