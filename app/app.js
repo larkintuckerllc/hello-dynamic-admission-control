@@ -25,8 +25,6 @@ app.post('/', (req, res) => {
     res.status(400).send();
     return;
   }
-  // TODO: NEED TO CREATE PVC (SIDE EFFECT THING)
-  // TODO: NEED TO ATTACH PVC TO POD
   // TODO: THINGS IN SEPARATE CONTROLLER
   // TODO: - NEED TO RECONCILE IF THE POD IS NOT CREATED
   // TODO: - NEED TO DELETE PVC WHEN DELETING POD
@@ -43,10 +41,12 @@ app.post('/', (req, res) => {
     });
     return;
   }
-  console.log('PATCH IT')
   if (!dryRun) {
+    // TODO: NEED PERMISSIONS TO CREATE PVC
+    // TODO: NEED TO CREATE PVC
     console.log('DO IT');
   }
+  // TODO: NEED TO ATTACH PVC TO POD
   const jsonPatch = [{
     op: 'add',
     path: '/metadata/labels',
