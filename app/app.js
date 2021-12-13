@@ -29,6 +29,7 @@ app.post("/", (req, res) => {
     return;
   }
   console.log('WHAT 1');
+  console.log(req.body);
   const {
     request: {
       dryRun,
@@ -39,7 +40,6 @@ app.post("/", (req, res) => {
       uid,
     },
   } = req.body;
-  console.log(annotations);
   if (dryRun || annotations == undefined ||
     annotations['volume-claim-template/name'] == undefined ||
     annotations['volume-claim-template/storage'] == undefined
