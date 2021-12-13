@@ -30,6 +30,7 @@ app.post("/", (req, res) => {
   }
   console.log('WHAT 1');
   console.log(req.body);
+  console.log(req.body.request.object)
   const {
     request: {
       dryRun,
