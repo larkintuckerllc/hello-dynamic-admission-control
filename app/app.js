@@ -32,8 +32,7 @@ app.post("/", (req, res) => {
       dryRun,
       namespace,
       object: {
-        labels,
-        metadata: { annotations },
+        metadata: { annotations, labels, },
         spec: { volumes },
       },
       uid,
