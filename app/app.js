@@ -107,10 +107,7 @@ app.post("/", (req, res) => {
         return;
       }
       const jsonPatch = [];
-      console.log(labels);
       if (labels == undefined) {
-        console.log('NO LABELS');
-        /*
         jsonPatch.push({
           op: "add",
           path: "/metadata/labels",
@@ -118,17 +115,12 @@ app.post("/", (req, res) => {
             'volume-claim/name': uid,
           },
         });
-        */
       } else {
-        console.log('NO LABELS');
-        console.log({ ...labels, 'volume-claim/name': uid })
-        /*
         jsonPatch.push({
           op: "replace",
           path: "/metadata/labels",
           value: { ...labels, 'volume-claim/name': uid },
         });
-        */
       }
       jsonPatch.push({
         op: "replace",
