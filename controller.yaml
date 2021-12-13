@@ -20,33 +20,29 @@ metadata:
   namespace: default
 spec:
   containers:
-  - image: gcr.io/magnetic-lore-329211/hdac:0.1.1
+  - image: [omitted]/hdac:0.1.1
     name: hdac
     ports:
     - containerPort: 8443
     imagePullPolicy: Always
-    command: ["/bin/sh"]     # TEMP
-    args:                    # TEMP
-    - -c                     # TEMP
-    - "tail -f /dev/null"    # TEMP
-    # livenessProbe:
-    #   httpGet:
-    #     port: 8443
-    #     path: /hc
-    #     scheme: HTTPS
-    # readinessProbe:
-    #   httpGet:
-    #     port: 8443
-    #     path: /hc
-    #     scheme: HTTPS
-    # resources:
-    #   limits:
-    #     cpu: 100m
-    #     memory: 128Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
-    # securityContext:
-    #   runAsNonRoot: true
-    #   readOnlyRootFilesystem: true
+    livenessProbe:
+      httpGet:
+        port: 8443
+        path: /hc
+        scheme: HTTPS
+    readinessProbe:
+      httpGet:
+        port: 8443
+        path: /hc
+        scheme: HTTPS
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    securityContext:
+      runAsNonRoot: true
+      readOnlyRootFilesystem: true
   serviceAccountName: hdac
