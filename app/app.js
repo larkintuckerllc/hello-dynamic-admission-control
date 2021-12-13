@@ -23,29 +23,28 @@ app.get("/hc", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  console.log('WHAT 0');
   if (req.body.request === undefined || req.body.request.uid === undefined) {
     res.status(400).send();
     return;
   }
-  console.log('WHAT 1');
-  console.log(req.body);
-  console.log(req.body.request.object)
   const {
     request: {
       dryRun,
       namespace,
       object: {
-        metadata: { annotations, },
-        spec: { volumes, }
+        labels,
+        metadata: { annotations },
+        spec: { volumes },
       },
       uid,
     },
   } = req.body;
-  if (dryRun || annotations == undefined ||
-    annotations['volume-claim-template/name'] == undefined ||
-    annotations['volume-claim-template/storage'] == undefined
-    ) {
+  if (
+    dryRun ||
+    annotations == undefined ||
+    annotations["volume-claim-template/name"] == undefined ||
+    annotations["volume-claim-template/storage"] == undefined
+  ) {
     res.send({
       apiVersion: "admission.k8s.io/v1",
       kind: "AdmissionReview",
@@ -56,8 +55,6 @@ app.post("/", (req, res) => {
     });
     return;
   }
-  console.log('WHAT 2');
-  console.log(namespace);
   const pvc = {
     metadata: {
       name: uid,
@@ -68,7 +65,7 @@ app.post("/", (req, res) => {
       storageClassName: "standard-rwo",
       resources: {
         requests: {
-          storage: annotations['volume-claim-template/storage'],
+          storage: annotations["volume-claim-template/storage"],
         },
       },
     },
@@ -76,7 +73,6 @@ app.post("/", (req, res) => {
   k8sApi
     .createNamespacedPersistentVolumeClaim(namespace, pvc)
     .then(() => {
-      console.log('WHERE 1');
       if (volumes == undefined) {
         res.send({
           apiVersion: "admission.k8s.io/v1",
@@ -85,25 +81,21 @@ app.post("/", (req, res) => {
             uid,
             allowed: false,
           },
-        }); 
+        });
         return;
       }
-      console.log('CP 1');
-      console.log(volumes);
       let success = false;
       for (let i = 0; i < volumes.length; i++) {
-        if (volumes[i].name == annotations['volume-claim-template/name']) {
+        if (volumes[i].name == annotations["volume-claim-template/name"]) {
           success = true;
           volumes[i] = {
-            name: annotations['volume-claim-template/name'],
+            name: annotations["volume-claim-template/name"],
             persistentVolumeClaim: {
               claimName: uid,
             },
           };
         }
       }
-      console.log('CP 2');
-      console.log(volumes);
       if (!success) {
         res.send({
           apiVersion: "admission.k8s.io/v1",
@@ -112,17 +104,30 @@ app.post("/", (req, res) => {
             uid,
             allowed: false,
           },
-        }); 
+        });
         return;
       }
-      console.log('CP 3');
-      jsonPatch = [{
-        op: 'replace',
-        path: '/spec/volumes',
+      const jsonPatch = [];
+      if (labels == undefined) {
+        jsonPatch.push({
+          op: "add",
+          path: "/metadata/labels",
+          value: {
+            'volume-claim/name': uid,
+          },
+        });
+      } else {
+        jsonPatch.push({
+          op: "replace",
+          path: "/metadata/labels",
+          value: { ...labels, 'volume-claim/name': uid },
+        });
+      }
+      jsonPatch.push({
+        op: "replace",
+        path: "/spec/volumes",
         value: volumes,
-      }];
-      console.log('CP 4');
-      console.log(jsonPatch);
+      });
       const jsonPatchString = JSON.stringify(jsonPatch);
       const jsonPatchBuffer = Buffer.from(jsonPatchString);
       const patch = jsonPatchBuffer.toString("base64");
@@ -137,9 +142,7 @@ app.post("/", (req, res) => {
         },
       });
     })
-    .catch((err) => {
-      console.log(err);
-      console.log('WHERE 2');
+    .catch(() => {
       res.send({
         apiVersion: "admission.k8s.io/v1",
         kind: "AdmissionReview",
