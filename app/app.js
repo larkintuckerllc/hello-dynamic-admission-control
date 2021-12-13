@@ -56,6 +56,9 @@ app.post("/", (req, res) => {
   }
   const pvc = {
     metadata: {
+      labels: {
+        managed: 'true',
+      },
       name: uid,
       namespace,
     },
