@@ -133,7 +133,8 @@ app.post("/", (req, res) => {
         },
       });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       console.log('WHERE 2');
       res.send({
         apiVersion: "admission.k8s.io/v1",
