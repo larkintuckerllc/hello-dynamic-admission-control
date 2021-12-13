@@ -34,8 +34,9 @@ app.post("/", (req, res) => {
   const {
     request: {
       dryRun,
+      namespace,
       object: {
-        metadata: { annotations, name, namespace, },
+        metadata: { annotations, },
         spec: { volumes, }
       },
       uid,
@@ -59,7 +60,7 @@ app.post("/", (req, res) => {
   console.log(namespace);
   const pvc = {
     metadata: {
-      name,
+      name: uid,
       namespace,
     },
     spec: {
@@ -96,7 +97,7 @@ app.post("/", (req, res) => {
           volumes[i] = {
             name: annotations['volume-claim-template/name'],
             persistentVolumeClaim: {
-              claimName: name,
+              claimName: uid,
             },
           };
         }
