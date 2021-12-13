@@ -55,9 +55,11 @@ app.post("/", (req, res) => {
     return;
   }
   console.log('WHAT 2');
+  console.log(namespace);
   const pvc = {
     metadata: {
       name,
+      namespace,
     },
     spec: {
       accessModes: ["ReadWriteOnce"],
